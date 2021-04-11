@@ -1,0 +1,29 @@
+---
+- name: update yum cache
+  yum: update_cache=yes 
+
+- name: install EPEL repository
+  yum: name=epel-release state=present
+
+- name: update all installed packages
+  yum: update_only=yes
+
+- name: install some useful packages
+  yum:
+    name: '{{ item }}'
+    state: present
+  loop:
+  - '{{ common_packages }}'
+  - '{{ redhat_packages }}'
+
+- name: configure DNF automatic updates
+  lineinfile:
+    path: /etc/dnf/automatic.conf
+    regexp: '^apply_updates ='
+    line: apply_updates = yes
+
+- name: start and enable dnf-automatic service
+  service: name=dnf-automatic.timer state=started enabled=yes
+
+- name: start and enable cockpit service
+  service: name=cockpit state=started enabled=yes

@@ -1,0 +1,24 @@
+---
+- name: set timezone to America/Los_Angeles
+  timezone:
+    name: America/Los_Angeles
+
+- name: disable sshd password authentication and root login
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+  - regexp: '^PasswordAuthentication '
+    line: PasswordAuthentication no
+  - regexp: '^PermitRootLogin '
+    line: PermitRootLogin no
+  register: sshd_config
+  notify:
+  - restart sshd
+
+- include_tasks: setup-RedHat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include_tasks: setup-Ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'

@@ -1,0 +1,28 @@
+---
+- name: hush loud bits of dynamic motd
+  lineinfile:
+    path: '/etc/default/motd-news'
+    regexp: '^ENABLED='
+    line: 'ENABLED=0'
+
+- name: update apt cache
+  apt: update_cache=yes cache_valid_time=86400
+
+- name: update all installed packages
+  apt: only_upgrade=yes
+
+- name: install some useful packages
+  apt:
+    name: '{{ item }}'
+    state: present
+  loop:
+  - '{{ common_packages }}'
+  - '{{ ubuntu_packages }}'
+
+- name: configure APT automatic updates
+  lineinfile:
+    path: /etc/apt/apt.conf.d/20auto-upgrades
+    line: '{{ item }}'
+  loop:
+    - 'APT::Periodic::Download-Upgradeable-Packages "1";'
+    - 'APT::Periodic::AutocleanInterval "7";'
