@@ -18,6 +18,7 @@
   loop:
   - '{{ common_packages }}'
   - '{{ ubuntu_packages }}'
+  failed_when: no
 
 - name: configure APT automatic updates
   lineinfile:
