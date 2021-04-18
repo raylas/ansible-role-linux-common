@@ -5,11 +5,9 @@
     regexp: '^ENABLED='
     line: 'ENABLED=0'
 
-- name: update apt cache
-  apt: update_cache=yes cache_valid_time=86400
-
 - name: update all installed packages
-  apt: only_upgrade=yes
+  apt:
+    only_upgrade: yes
 
 - name: install some useful packages
   apt:
